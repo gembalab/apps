@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemba Lab — Fast. Lean. Flawless. | Professional Production Tools</title>
+  <meta name="description" content="Gemba Lab: Fast. Lean. Flawless. Professional cinema, broadcast, and live operations tools engineered for macOS, iPadOS, and iOS.">
+  <link rel="icon" type="image/png" href="assets/gemba_lab_favicon.png">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --card-bg: #f5f5f7;
+      --card-border: #d2d2d7;
+      --text: #1d1d1f;
+      --text-secondary: #86868b;
+      --accent: #0071e3;
+      --accent-hover: #0077ed;
+      --border: #e5e5ea;
+      --radius: 18px;
+      --radius-sm: 10px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --badge-bg: rgba(0, 113, 227, 0.08);
+      --badge-color: #0071e3;
+      --appstore-bg: #000000;
+      --appstore-text: #ffffff;
+      
+      /* Status Theme Colors */
+      --status-live-bg: rgba(52, 199, 89, 0.12);
+      --status-live-border: rgba(52, 199, 89, 0.4);
+      --status-live-text: #28a745;
+      --status-review-bg: rgba(0, 113, 227, 0.10);
+      --status-review-border: rgba(0, 113, 227, 0.35);
+      --status-review-text: #0071e3;
+      --status-dev-bg: rgba(255, 149, 0, 0.12);
+      --status-dev-border: rgba(255, 149, 0, 0.35);
+      --status-dev-text: #d97706;
+      --status-roadmap-bg: rgba(138, 43, 226, 0.10);
+      --status-roadmap-border: rgba(138, 43, 226, 0.32);
+      --status-roadmap-text: #8a2be2;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #000000;
+        --card-bg: #141416;
+        --card-border: #242428;
+        --text: #f5f5f7;
+        --text-secondary: #a1a1a6;
+        --accent: #2997ff;
+        --accent-hover: #3ca3ff;
+        --border: #2e2e32;
+        --badge-bg: rgba(41, 151, 255, 0.14);
+        --badge-color: #2997ff;
+        --appstore-bg: #ffffff;
+        --appstore-text: #000000;
+
+        --status-live-bg: rgba(48, 209, 88, 0.16);
+        --status-live-border: rgba(48, 209, 88, 0.5);
+        --status-live-text: #30d158;
+        --status-review-bg: rgba(41, 151, 255, 0.14);
+        --status-review-border: rgba(41, 151, 255, 0.4);
+        --status-review-text: #2997ff;
+        --status-dev-bg: rgba(255, 159, 10, 0.16);
+        --status-dev-border: rgba(255, 159, 10, 0.4);
+        --status-dev-text: #ff9f0a;
+        --status-roadmap-bg: rgba(191, 90, 242, 0.16);
+        --status-roadmap-border: rgba(191, 90, 242, 0.4);
+        --status-roadmap-text: #bf5af2;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Sticky Navigation Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      header {
+        background: rgba(0, 0, 0, 0.85);
+      }
+    }
+
+    .nav-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-img {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    }
+
+    .brand-text-wrap {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+
+    .brand-name {
+      font-size: 1.08rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+    }
+
+    .brand-sub {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--card-bg);
+      padding: 4px;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+    }
+
+    .nav-tab-btn {
+      padding: 6px 16px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      border-radius: 18px;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .nav-tab-btn.active, .nav-tab-btn:hover {
+      color: var(--text);
+      background: var(--bg);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    /* Main Container */
+    .main-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+      flex: 1;
+      width: 100%;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 30px 0 48px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--badge-color);
+      background: var(--badge-bg);
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(41, 151, 255, 0.2);
+    }
+
+    .hero h1 {
+      font-size: 2.85rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Suite Quick Navigation Pills (No Emojis) */
+    .suite-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+      justify-content: center;
+    }
+
+    .suite-pill-btn {
+      font-size: 0.86rem;
+      font-weight: 600;
+      background: var(--card-bg);
+      padding: 7px 18px;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      text-decoration: none;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .suite-pill-btn:hover {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.25);
+    }
+
+    .suite-pill-btn .suite-count {
+      font-size: 0.75rem;
+      opacity: 0.75;
+      font-weight: 500;
+      padding-left: 2px;
+    }
+
+    /* Content Views */
+    .view-section {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Suite Category Sections */
+    .suite-block {
+      margin-bottom: 72px;
+      scroll-margin-top: 84px;
+    }
+
+    .suite-header {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .suite-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .suite-title {
+      font-size: 2.0rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+    }
+
+    .suite-desc {
+      font-size: 1.02rem;
+      color: var(--text-secondary);
+      max-width: 760px;
+      line-height: 1.55;
+    }
+
+    /* Apps Grid (2-column layout per suite) */
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 22px;
+    }
+
+    .app-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .app-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .app-card:hover {
+        box-shadow: 0 12px 32px rgba(0,0,0,0.36);
+        border-color: rgba(255, 255, 255, 0.16);
+      }
+    }
+
+    .app-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .app-icon-img {
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .app-icon-img {
+        border-color: rgba(255,255,255,0.1);
+      }
+    }
+
+    /* Blueprint / Schematic "No Icon" Concept Placeholder */
+    .app-icon-blueprint {
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(30, 35, 45, 0.95), rgba(15, 18, 25, 0.95));
+      border: 1.2px dashed var(--status-roadmap-text);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app-icon-blueprint svg {
+      width: 26px;
+      height: 26px;
+      color: var(--status-roadmap-text);
+      opacity: 0.9;
+    }
+
+    .app-icon-blueprint .blueprint-label {
+      font-size: 0.55rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--status-roadmap-text);
+      margin-top: 1px;
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+
+    .platform-badge {
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .app-card h2 {
+      font-size: 1.38rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      margin-bottom: 4px;
+    }
+
+    .app-tagline {
+      font-size: 0.90rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+
+    .app-desc {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      margin-bottom: 18px;
+    }
+
+    .app-features {
+      list-style: none;
+      margin-bottom: 24px;
+    }
+
+    .app-features li {
+      font-size: 0.86rem;
+      color: var(--text);
+      padding: 4px 0 4px 20px;
+      position: relative;
+      line-height: 1.45;
+    }
+
+    .app-features li::before {
+      content: "•";
+      color: var(--accent);
+      font-weight: bold;
+      position: absolute;
+      left: 4px;
+    }
+
+    .app-card-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pricing-block {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pricing-primary {
+      font-size: 1.12rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .pricing-sub {
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+    }
+
+    .pricing-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--badge-bg);
+      padding: 2px 7px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+
+    .status-action-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      padding: 5px 12px;
+      border-radius: 14px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .status-badge.live {
+      background: var(--status-live-bg);
+      border: 1px solid var(--status-live-border);
+      color: var(--status-live-text);
+    }
+
+    .status-badge.live .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--status-live-text);
+      box-shadow: 0 0 8px var(--status-live-text);
+      animation: pulseDot 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.55; transform: scale(0.85); }
+    }
+
+    .status-badge.review {
+      background: var(--status-review-bg);
+      border: 1px solid var(--status-review-border);
+      color: var(--status-review-text);
+    }
+
+    .status-badge.dev {
+      background: var(--status-dev-bg);
+      border: 1px solid var(--status-dev-border);
+      color: var(--status-dev-text);
+    }
+
+    .status-badge.roadmap {
+      background: var(--status-roadmap-bg);
+      border: 1px solid var(--status-roadmap-border);
+      color: var(--status-roadmap-text);
+    }
+
+    .appstore-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--appstore-bg);
+      color: var(--appstore-text);
+      padding: 6px 14px;
+      border-radius: 14px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .appstore-btn:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Cards in Support and Privacy */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 36px;
+      margin-bottom: 24px;
+    }
+
+    .card h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .card h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin: 20px 0 8px;
+    }
+
+    .contact-card {
+      text-align: center;
+      padding: 48px 24px;
+    }
+
+    .contact-card p {
+      max-width: 480px;
+      margin: 0 auto 24px;
+      color: var(--text-secondary);
+    }
+
+    .contact-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #ffffff;
+      padding: 12px 28px;
+      border-radius: 24px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .contact-btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .email-text {
+      display: block;
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .faq-item {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-item:last-child {
+      border-bottom: none;
+    }
+
+    .faq-q {
+      font-weight: 600;
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+    }
+
+    .faq-item p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 20px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: auto;
+    }
+
+    footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    footer a:hover {
+      color: var(--accent);
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.2rem; }
+      .suite-title { font-size: 1.65rem; }
+      .apps-grid { grid-template-columns: 1fr; }
+      .app-card-footer { flex-direction: column; align-items: flex-start; }
+      .status-action-wrap { width: 100%; justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header>
+    <div class="nav-container">
+      <a href="#apps" class="brand" onclick="switchTab('apps'); return false;">
+        <img src="assets/gemba_lab_favicon.png" alt="Gemba Lab Logo" class="brand-logo-img">
+        <div class="brand-text-wrap">
+          <span class="brand-name">Gemba Lab</span>
+          <span class="brand-sub">Fast. Lean. Flawless.</span>
+        </div>
+      </a>
+      <nav class="nav-tabs">
+        <button id="tab-apps" class="nav-tab-btn active" onclick="switchTab('apps')">Apps &amp; Suites</button>
+        <button id="tab-support" class="nav-tab-btn" onclick="switchTab('support')">Support</button>
+        <button id="tab-privacy" class="nav-tab-btn" onclick="switchTab('privacy')">Privacy</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="main-container">
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <span id="hero-badge" class="hero-badge">Gemba Lab &bull; Fast. Lean. Flawless.</span>
+      <h1 id="hero-title">Tools Born on Set</h1>
+      <p id="hero-desc">Professional cinema, broadcast, and live operations utilities engineered for rock-solid stability, zero latency, and uncompromising workflows across macOS, iPadOS &amp; iOS.</p>
+      
+      <!-- Suite Jump Pills (No Emojis) -->
+      <div class="suite-pills">
+        <a href="#suite-dit" class="suite-pill-btn">
+          <span>DIT &amp; Camera Archive</span>
+          <span class="suite-count">(4 Tools)</span>
+        </a>
+        <a href="#suite-color" class="suite-pill-btn">
+          <span>Color, Telemetry &amp; Look</span>
+          <span class="suite-count">(5 Tools)</span>
+        </a>
+        <a href="#suite-live" class="suite-pill-btn">
+          <span>Live Operations &amp; Cue</span>
+          <span class="suite-count">(4 Tools)</span>
+        </a>
+        <a href="#suite-set" class="suite-pill-btn">
+          <span>Set Operations &amp; Paperless</span>
+          <span class="suite-count">(2 Tools)</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- 1. APPS VIEW (4 SUITES ECOSYSTEM) -->
+    <section id="view-apps" class="view-section active">
+
+      <!-- ======================================================== -->
+      <!-- SUITE 1: DIT & CAMERA ARCHIVE SUITE -->
+      <!-- ======================================================== -->
+      <div class="suite-block" id="suite-dit">
+        <div class="suite-header">
+          <span class="suite-badge">Suite 01 // Data Management &amp; Camera Pit</span>
+          <h2 class="suite-title">DIT &amp; Camera Archive Suite</h2>
+          <p class="suite-desc">Mission-critical media offloading, hardware checksum verification, storage health diagnostics, and cinema disk catalog indexing.</p>
+        </div>
+
+        <div class="apps-grid">
+
+          <!-- 1. Offloader Pro -->
+          <article class="app-card" id="app-offloader">
+            <div>
+              <div class="app-card-top">
+                <img src="assets/icons/offloader.png" alt="Offloader Pro Icon" class="app-icon-img">
+                <span class="platform-badge">macOS &bull; Direct I/O</span>
+              </div>
+              <h2>Offloader Pro</h2>
+              <div class="app-tagline">Secure Media Offloader &amp; Checksum Verifier</div>
+              <p class="app-desc">High-speed, multi-destination media backup engineered for DITs and cinema camera crew. Features hardware-direct I/O without OS cache deception.</p>
+              <ul class="app-features">
+                <li>Parallel multi-destination backup to SSD, HDD &amp; RAID (macOS <code>F_NOCACHE</code>)</li>
+                <li>xxHash64, MD5 &amp; SHA-256 byte-by-byte hardware readback verification</li>
+                <li>Automated ASC MHL v1.1 manifests &amp; visual PDF audit reports with MB/s benchmarks</li>
+                <li>Real-time drive telemetry &amp; iOS companion alerts stream</li>
+              </ul>
+            </div>
+            <div class="app-card-footer">
+              <div class="pricing-block">
+                <div class="pricing-primary">$49.99 <span class="pricing-tag">7-Day Free Trial</span></div>
+                <span class="pricing-sub">One-Time Lifetime Purchase</span>
+              </div>
+              <div class="status-action-wrap">
+                <span class="status-badge live">
+                  <span class="status-dot"></span>
+                  <span>Live</span>
+                </span>
+                <a href="https://apps.apple.com/app/offloader-pro/id6823012781" target="_blank" rel="noopener" class="appstore-btn">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 0.92-2.87-.93.04-2.02.63-2.65 1.37-.56.64-1.04 1.71-.91 2.74 1.04.08 2.06-.52 2.64-1.24z"/></svg>
+                  <span>Mac App Store</span>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- 2. Offloader Companion -->
+          <article class="app-card" id="app-offloader-companion">
+            <div>
+              <div class="app-card-top">
+                <img src="assets/icons/offloader-companion.png" alt="Offloader Companion Icon" class="app-icon-img">
+                <span class="platform-badge">iOS &bull; iPhone &bull; Watch</span>
+              </div>
+              <h2>Offloader Companion</h2>
+              <div class="app-tagline">Real-Time DIT Telemetry &amp; Push Monitor</div>
+              <p class="app-desc">Step away from your DIT cart with complete peace of mind. Live copy speeds, checksum verification, and APNs completion alerts stream directly to your pocket and wrist.</p>
+              <ul class="app-features">
+                <li>1-second instant QR code pairing with Offloader Pro over local Wi-Fi / Relay</li>
+                <li>Real-time transfer throughput (MB/s), ETA countdown, and verified gigabytes</li>
+                <li>Instant APNs push notifications on completion or accidental drive disconnect</li>
+                <li>Apple Watch glanceable complications &amp; zero-knowledge encrypted telemetry</li>
+              </ul>
+            </div>
+            <div class="app-card-footer">
+              <div class="pricing-block">
+                <div class="pricing-primary">Free Companion</div>
+                <span class="pricing-sub">Included with Offloader Pro</span>
+              </div>
+              <div class="status-action-wrap">
+                <span class="status-badge review">App Store Review</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- 3. MediaCheck -->
+          <article class="app-card" id="app-mediacheck">
+            <div>
+              <div class="app-card-top">
+                <img src="assets/icons/mediacheck.png" alt="MediaCheck Icon" class="app-icon-img">
+                <span class="platform-badge">macOS &bull; Direct I/O</span>
+              </div>
+              <h2>MediaCheck</h2>
+              <div class="app-tagline">Zero-Click Camera Media Health &amp; Speed Inspector</div>
+              <p class="app-desc">Instant plug-and-verify drive diagnostics engineered to prevent catastrophic on-set recording drops. Bypasses OS cache deception with bit-exact pattern validation.</p>
+              <ul class="app-features">
+                <li>Zero-click auto-mount detection: immediately benchmarks cards upon insertion</li>
+                <li>Real-world sustained write/read testing using unbuffered <code>F_NOCACHE</code> Direct I/O</li>
+                <li>Bit-exact pattern verification detecting bad NAND blocks, counterfeit media &amp; voltage drops</li>
+                <li>Instant traffic-light PASS/DANGER verdict with audio cues &amp; PDF certificate export</li>
+              </ul>
+            </div>
+            <div class="app-card-footer">
+              <div class="pricing-block">
+                <div class="pricing-primary">100% Free <span class="pricing-tag">Free Utility</span></div>
+                <span class="pricing-sub">No Ads &bull; No Account &bull; Permanent Free</span>
+              </div>
+              <div class="status-action-wrap">
+                <span class="status-badge roadmap">Coming Soon</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- 4. HyperCatalog -->
+          <article class="app-card" id="app-hypercatalog">
+            <div>
+              <div class="app-card-top">
+                <img src="assets/icons/hypercatalog.png" alt="HyperCatalog Icon" class="app-icon-img">
+                <span class="platform-badge">macOS &bull; Cinema Media Engine</span>
+              </div>
+              <h2>HyperCatalog</h2>
+              <div class="app-tagline">Offline Media Cataloger &amp; Search Index</div>
+              <p class="app-desc">Blazing-fast indexing of camera cards, RAIDs, and offline cold storage. Find any clip across hundreds of terabytes in milliseconds without plugging drives in.</p>
+              <ul class="app-features">
+                <li>Instant offline visual search across thousands of indexed volumes</li>
+                <li>Embedded thumbnail extraction for Cinema RAW, ProRes, and MXF</li>
+                <li>Deep metadata inspection: camera profiles, focal lengths, ISO, and timecode</li>
+                <li>Lightweight SQLite database engine with zero external database dependencies</li>
+              </ul>
+            </div>
+            <div class="app-card-footer">
+              <div class="pricing-block">
+                <div class="pricing-primary">$24.99 <span class="pricing-tag">7-Day Free Trial</span></div>
+                <span class="pricing-sub">One-Time Lifetime Purchase</span>
+              </div>
+              <div class="status-action-wrap">
+                <span class="status-badge live">
+                  <span class="status-dot"></span>
+                  <span>Live</span>
+                </span>
+                <a href="https://apps.apple.com/app/hypercatalog-offline-disk-hub/id6823483376" target="_blank" rel="noopener" class="appstore-btn">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 0.92-2.87-.93.04-2.02.63-2.65 1.37-.56.64-1.04 1.71-.91 2.74 1.04.08 2.06-.52 2.64-1.24z"/></svg>
+                  <span>Mac App Store</span>
+                </a>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- SUITE 2: COLOR, TELEMETRY & LOOK SUITE -->
+      <!-- (Reordered: LIVE Studio -> Scope -> LUT -> Surface) -->
+      <!-- ======================================================== -->
+      <div class="suite-block" id="suite-color">
+        <div class="suite-header">
+          <span class="suite-badge">Suite 02 // Color, Telemetry &amp; Look</span>
+          <h2 class="suite-title">Color, Telemetry &amp; Look Suite</h2>
+          <p class="suite-desc">Real-time waveform telemetry, high-speed 3D LUT auditioning, hardware LUT Box control, and dedicated tactile control surfaces.</p>
+        </div>
+
+        <div class="apps-grid">
+
+          <!-- 1. LumaLIVE Studio (LIVE) -->
+          <article class="app-card" id="app-lumalive">
+            <div>
+              <div class="app-card-top">
+                <img src="assets/icons/lumalive.png" alt="LumaLIVE Studio Icon" class="app-icon-img">
+                <span class="platform-badge">macOS &bull; Live LUT Box Engine</span>
+              </div>
+              <h2>LumaLIVE Studio</h2>
+              <div class="app-tagline">On-Set Live Grading &amp; IP Telemetry Engine</div>
+              <p class="app-desc">Rock-solid, ultra-low-latency on-set live grading engineered for zero crash anxiety. Combines Blackmagic SDI capture with direct TCP/REST control for FSI BoxIO and AJA ColorBox LUT boxes.</p>
+              <ul class="app-features">
+                <li>Direct hardware control for FSI BoxIO (TCP) &amp; AJA ColorBox (REST API)</li>
+                <li>Live camera video ingest &amp; frame grabs via Blackmagic (UltraStudio / DeckLink) &amp; UVC</li>
+                <li>Industry-standard cinema node pipeline (CST, CDL, 3-Way Wheels, Curves, 3D LUT)</li>
+                <li>Real-time IP telemetry (ping, temp, SDI lock) &amp; physical Flash LED rack identification</li>
+              </ul>
+            </div>
+            <div class="app-card-footer">
+              <div class="pricing-block">
+                <div class="pricing-primary">Pricing TBA <span class="pricing-tag">No Subscription</span></div>
+                <span class="pricing-sub">Perpetual Studio License &bull; Day Pass Options</span>
+              </div>
+              <div class="status-action-wrap">
+                <span class="status-badge dev">In Development</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- 2. LumaScope Pro (Scope) -->
+          <article class="app-card" id="app-lumascope">
+            <div>
+              <div class="app-card-top">
+                <img src="assets/icons/lumascope.png" alt="LumaScope Pro Icon" class="app-icon-img">
+                <span class="platform-badge">macOS &bull; Zero-Latency Metal</span>
+              </div>
+              <h2>LumaScope Pro</h2>
+              <div class="app-tagline">Broadcast Multi-Scope &amp; Video Telemetry</div>
+              <p class="app-desc">High-precision, zero-latency vector waveform monitor engineered for live grading carts, studio mastering, and DP camera monitoring.</p>
+              <ul class="app-features">
+                <li>True 60fps Metal-accelerated Waveform, RGB Parade, Vectorscope &amp; CIE Gamut</li>
+                <li>Broadcast-compliant camera false color overlays (ARRI, RED, Sony, Canon)</li>
+                <li>Sub-millisecond low-latency live video capture via Blackmagic &amp; UVC inputs</li>
+                <li>High-precision clipping indicators &amp; multi-channel audio phase/level monitoring</li>
+              </ul>
+            </div>
+            <div class="app-card-footer">
+              <div class="pricing-block">
+                <div class="pricing-primary">$59.99 <span class="pricing-tag">7-Day Free Trial</span></div>
+                <span class="pricing-sub">One-Time Lifetime Purchase</span>
+              </div>
+              <div class="status-action-wrap">
+                <span class="status-badge live">
+                  <span class="status-dot"></span>
+                  <span>Live</span>
+                </span>
+                <a href="https://apps.apple.com/app/lumascope-pro/id6827397379" target="_blank" rel="noopener" class="appstore-btn">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 0.92-2.87-.93.04-2.02.63-2.65 1.37-.56.64-1.04 1.71-.91 2.74 1.04.08 2.06-.52 2.64-1.24z"/></svg>
+                  <span>Mac App Store</span>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- 3. LumaLUT (LUT) -->
+          <article class="app-card" id="app-lumalut">
+            <div>
+              <div class="app-card-top">
+                <img src="assets/icons/lumalut.png" alt="LumaLUT Icon" class="app-icon-img">
+                <span class="platform-badge">macOS &bull; 3D LUT Utility</span>
+              </div>
+              <h2>LumaLUT</h2>
+              <div class="app-tagline">Instant 3D LUT Auditioning &amp; Management</div>
+              <p class="app-desc">Rapidly preview, organize, and compare hundreds of 3D LUTs against Cinema RAW stills and video clips with zero load latency.</p>
+              <ul class="app-features">
+                <li>Instant zero-delay preview of <code>.cube</code> and <code>.3dl</code> look tables</li>
+                <li>Split-screen A/B wipe comparison &amp; bypass with 1pt smooth precision dragging</li>
+                <li>Native decoding for Cinema RAW clips (BRAW, RED, ProRes, Sony MXF)</li>
+                <li>Non-destructive 6-axis color shift &amp; custom tone curve adjustments</li>
+              </ul>
+            </div>
+            <div class="app-card-footer">
+              <div class="pricing-block">
+                <div class="pricing-primary">$9.99 <span class="pricing-tag">In-App Purchase</span></div>
+                <span class="pricing-sub">One-Time Lifetime Pro Unlock</span>
+              </div>
+              <div class="status-action-wrap">
+                <span class="status-badge review">App Store Review</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- 4. LumaLIVE Surface (Surface - Concept Roadmap) -->
+          <article class="app-card" id="app-lumalive-surface">
+            <div>
+              <div class="app-card-top">
+                <div class="app-icon-blueprint">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="6" cy="12" r="3.5"></circle>
+                    <circle cx="12" cy="12" r="3.5"></circle>
+                    <circle cx="18" cy="12" r="3.5"></circle>
+                    <path d="M6 19v2M12 19v2M18 19v2"></path>
+                  </svg>
+                  <span class="blueprint-label">Surface</span>
+                </div>
+                <span class="platform-badge">iPadOS &bull; iPad Dedicated</span>
+              </div>
+              <h2>LumaLIVE Surface</h2>
+              <div class="app-tagline">Dedicated Tactile Touch Color Control Surface</div>
+              <p class="app-desc">Turns your existing iPad into a high-end 3-wheel color grading console via zero-latency USB-C tethering. No expensive bulky hardware panels required.</p>
+              <ul class="app-features">
+                <li>Single USB-C cable connection: &lt;0.5ms latency, zero RF interference, continuous charging</li>
+                <li>Simultaneous two-hand multi-touch: adjust Lift &amp; Gain wheels concurrently</li>
+                <li>Relative drag gesture tracking: intuitive blind-touch adjustment while watching monitor</li>
+                <li>Instant node timeline selection, bypass (⌘B), split wipe, and reference still recall</li>
+              </ul>
+            </div>
+            <div class="app-card-footer">
+              <div class="pricing-block">
+                <div class="pricing-primary">Free Companion</div>
+                <span class="pricing-sub">Included with LumaLIVE Studio</span>
+              </div>
+              <div class="status-action-wrap">
+                <span class="status-badge roadmap">Ecosystem Roadmap</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- 5. LumaCAL (Working Title) -->
+          <article class="app-card" id="app-lumacal">
+            <div>
+              <div class="app-card-top">
+                <div class="app-icon-blueprint">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="12" cy="12" r="8"></circle>
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <line x1="12" y1="2" x2="12" y2="6"></line>
+                    <line x1="12" y1="18" x2="12" y2="22"></line>
+                    <line x1="2" y1="12" x2="6" y2="12"></line>
+                    <line x1="18" y1="12" x2="22" y2="12"></line>
+                  </svg>
+                  <span class="blueprint-label">Calib</span>
+                </div>
+                <span class="platform-badge">macOS &bull; Direct USB-HID Probe</span>
+              </div>
+              <h2>LumaCAL <span style="font-size: 0.65em; font-weight: 600; color: var(--text-secondary); vertical-align: middle;">(Working Title)</span></h2>
+              <div class="app-tagline">Precision Monitor Alignment &amp; 3D LUT Generator</div>
+              <p class="app-desc">Zero-learning-curve master monitor calibration for SmallHD, AtomOS, and production displays. Direct Calibrite/Spyder USB-HID probe detection, 3-minute rapid patching, and instant 33-point 3D LUT generation.</p>
+              <ul class="app-features">
+                <li>Direct USB-HID probe connection (Calibrite Display / Spyder) with zero driver installation</li>
+                <li>3-step rapid patch generator: plug in, select standard (Rec.709 D65), and measure</li>
+                <li>Automated 33x33x33 3D LUT (<code>.cube</code>) export directly to SD card for SmallHD PageOS &amp; AtomOS</li>
+                <li>Instant inspection certificate (PDF) generation for camera rental fleet verification</li>
+              </ul>
+            </div>
+            <div class="app-card-footer">
+              <div class="pricing-block">
+                <div class="pricing-primary">TBA <span class="pricing-tag">In Development</span></div>
+                <span class="pricing-sub">$0.99 1-Day Rental Pass &bull; Unlimited Fleet License</span>
+              </div>
+              <div class="status-action-wrap">
+                <span class="status-badge dev">In Development</span>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- SUITE 3: LIVE OPERATIONS & STAGE CUE SUITE -->
+      <!-- ======================================================== -->
+      <div class="suite-block" id="suite-live">
+        <div class="suite-header">
+          <span class="suite-badge">Suite 03 // Stage Direction &amp; Audio Operations</span>
+          <h2 class="suite-title">Live Operations &amp; Stage Cue Suite</h2>
+          <p class="suite-desc">Scripted stage cue orchestration, sub-millisecond broadcast audio cart firing, talent countdown telemetry, and wired safety cue execution.</p>
+        </div>
+
+        <div class="apps-grid">
+
+          <!-- 1. CueFlow Studio -->
+          <article class="app-card" id="app-cueflow">
+            <div>
+              <div class="app-card-top">
+                <img src="assets/icons/cueflow.png" alt="CueFlow Studio Icon" class="app-icon-img">
+                <span class="platform-badge">macOS &bull; Live Cue Engine</span>
+              </div>
+              <h2>CueFlow Studio</h2>
+              <div class="app-tagline">Live Event Playback &amp; Cue Orchestration</div>
+              <p class="app-desc">Professional cue playback engine for concerts, theatre, and broadcast stages. Delivers deterministic multi-track audio and timecode synchronization.</p>
+              <ul class="app-features">
+                <li>Timeline &amp; node-based sequential cue management for complex live shows</li>
+                <li>SMPTE timecode (LTC) synchronization &amp; zero-latency video playback triggers</li>
+                <li>Automated blackout, standby warnings, and DMX/MIDI stage lighting integration</li>
+                <li>Local Wi-Fi &amp; LAN broadcast telemetry for performer and crew displays</li>
+              </ul>
+            </div>
+            <div class="app-card-footer">
+              <div class="pricing-block">
+                <div class="pricing-primary">$99.99 <span class="pricing-tag">7-Day Free Trial</span></div>
+                <span class="pricing-sub">$0.99 1-Day Pass Available &bull; Lifetime Unlock</span>
+              </div>
+              <div class="status-action-wrap">
+                <span class="status-badge live">
+                  <span class="status-dot"></span>
+                  <span>Live</span>
+                </span>
+                <a href="https://apps.apple.com/app/cueflow-studio/id6823194669" target="_blank" rel="noopener" class="appstore-btn">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 0.92-2.87-.93.04-2.02.63-2.65 1.37-.56.64-1.04 1.71-.91 2.74 1.04.08 2.06-.52 2.64-1.24z"/></svg>
+                  <span>Mac App Store</span>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- 2. CartPad -->
+          <article class="app-card" id="app-cartpad">
+            <div>
+              <div class="app-card-top">
+                <img src="assets/icons/cartpad.png" alt="CartPad Icon" class="app-icon-img">
+                <span class="platform-badge">macOS &bull; iOS &bull; Universal</span>
+              </div>
+              <h2>CartPad</h2>
+              <div class="app-tagline">Tactile Broadcast Audio Cart &amp; Soundboard</div>
+              <p class="app-desc">Zero-latency sound effects and jingle cart machine for broadcasters, theaters, streamers, and live stage managers with sub-millisecond response.</p>
+              <ul class="app-features">
+                <li>Ultra-responsive multi-channel audio playback with zero trigger latency</li>
+                <li>64 customizable responsive trigger pads with color-coded audio groups</li>
+                <li>Multi-output audio device routing, loop modes, and automatic ducking</li>
+                <li>Universal Purchase: Buy once, use on Mac, iPad, and iPhone seamlessly</li>
+              </ul>
+            </div>
+            <div class="app-card-footer">
+              <div class="pricing-block">
+                <div class="pricing-primary">$9.99 <span class="pricing-tag">In-App Purchase</span></div>
+                <span class="pricing-sub">Universal Purchase &bull; macOS &amp; iOS</span>
+              </div>
+              <div class="status-action-wrap">
+                <span class="status-badge review">App Store Review</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- 3. CueFlow Stage -->
+          <article class="app-card" id="app-cueflow-stage">
+            <div>
+              <div class="app-card-top">
+                <img src="assets/icons/cueflow-stage.png" alt="CueFlow Stage Icon" class="app-icon-img">
+                <span class="platform-badge">iOS &bull; iPhone Dedicated</span>
+              </div>
+              <h2>CueFlow Stage</h2>
+              <div class="app-tagline">Wireless Stage Tally &amp; Countdown Display</div>
+              <p class="app-desc">Dedicated iPhone remote countdown timer and visual tally receiver for performers, dancers, and stage crew. Eliminates communication friction backstage.</p>
+              <ul class="app-features">
+                <li>High-contrast stealth dark mode visible under blinding concert spotlights</li>
+                <li>Zero-configuration auto-discovery of CueFlow Studio on local network</li>
+                <li>Sub-frame synchronization of scene names, cue numbers, and blackout warnings</li>
+                <li>Ultra-low battery consumption for all-day live performance rehearsals</li>
+              </ul>
+            </div>
+            <div class="app-card-footer">
+              <div class="pricing-block">
+                <div class="pricing-primary">Free Companion</div>
+                <span class="pricing-sub">For CueFlow Studio</span>
+              </div>
+              <div class="status-action-wrap">
+                <span class="status-badge dev">In Development</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- 4. CueFlow Remote (Concept Roadmap) -->
+          <article class="app-card" id="app-cueflow-remote">
+            <div>
+              <div class="app-card-top">
+                <div class="app-icon-blueprint">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="5" y="3" width="14" height="18" rx="3"></rect>
+                    <circle cx="12" cy="8" r="2.5"></circle>
+                    <path d="M9 15h6M9 18h6"></path>
+                  </svg>
+                  <span class="blueprint-label">Remote</span>
+                </div>
+                <span class="platform-badge">iPadOS &bull; iPad Dedicated</span>
+              </div>
+              <h2>CueFlow Remote</h2>
+              <div class="app-tagline">Wired Stage Safety Cue Controller</div>
+              <p class="app-desc">Ultra-safe tactile cue firing controller for stage managers, assistant directors, and lighting operators. Zero dropped cues in live environments.</p>
+              <ul class="app-features">
+                <li>Failsafe wired USB / Ethernet connection bypassing crowded venue wireless frequencies</li>
+                <li>Giant safety-guarded GO, HOLD, and EMERGENCY STOP action buttons</li>
+                <li>Real-time multi-crew task status and running timecode verification</li>
+                <li>Tactile haptic feedback confirmation on cue delivery</li>
+              </ul>
+            </div>
+            <div class="app-card-footer">
+              <div class="pricing-block">
+                <div class="pricing-primary">Free Companion</div>
+                <span class="pricing-sub">Included with CueFlow Studio</span>
+              </div>
+              <div class="status-action-wrap">
+                <span class="status-badge roadmap">Ecosystem Roadmap</span>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- SUITE 4: SET OPERATIONS & PAPERLESS SUITE -->
+      <!-- ======================================================== -->
+      <div class="suite-block" id="suite-set">
+        <div class="suite-header">
+          <span class="suite-badge">Suite 04 // Production Direction &amp; Set Operations</span>
+          <h2 class="suite-title">Set Operations &amp; Paperless Suite</h2>
+          <p class="suite-desc">Paperless digital production workflows for directors, assistant directors, camera crews, and script supervisors. Dedicated iPad digital slating and multi-crew synchronized script binders.</p>
+        </div>
+
+        <div class="apps-grid">
+
+          <!-- 1. SlateFlow -->
+          <article class="app-card" id="app-slateflow">
+            <div>
+              <div class="app-card-top">
+                <img src="assets/icons/slateflow.png" alt="SlateFlow Icon" class="app-icon-img">
+                <span class="platform-badge">iPadOS &bull; iPad Dedicated</span>
+              </div>
+              <h2>SlateFlow</h2>
+              <div class="app-tagline">Digital Clapperboard, Smart Slate &amp; Take Logger</div>
+              <p class="app-desc">Dedicated iPad cinema &amp; broadcast digital slate with acoustic 1.0 kHz sync tone, optical flash, whiteboard memo area, and multi-page darkroom PDF cue sheets.</p>
+              <ul class="app-features">
+                <li>1.0 kHz AVFoundation sine sync tone &amp; mechanical clapper optical flash</li>
+                <li>Smart Chroma-Inverting Metal shader: turns white scripts dark while keeping talent color-coding</li>
+                <li>Instant 1-tap outcome stamping (Circle Take, Hold, Retake/NG) with running SMPTE TC</li>
+                <li>Automated post-production export to DaVinci Resolve EDL, Avid ALE &amp; CSV</li>
+              </ul>
+            </div>
+            <div class="app-card-footer">
+              <div class="pricing-block">
+                <div class="pricing-primary">$9.99 <span class="pricing-tag">In-App Purchase</span></div>
+                <span class="pricing-sub">Free Download &bull; 1 Project Free</span>
+              </div>
+              <div class="status-action-wrap">
+                <span class="status-badge dev">In Development</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- 2. ScriptFlow -->
+          <article class="app-card" id="app-scriptflow">
+            <div>
+              <div class="app-card-top">
+                <div class="app-icon-blueprint">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    <line x1="9" y1="7" x2="15" y2="7"></line>
+                    <line x1="9" y1="11" x2="15" y2="11"></line>
+                  </svg>
+                  <span class="blueprint-label">Script</span>
+                </div>
+                <span class="platform-badge">macOS &bull; iOS &bull; Universal</span>
+              </div>
+              <h2>ScriptFlow</h2>
+              <div class="app-tagline">Multi-Crew Synchronized Script &amp; Production Binder</div>
+              <p class="app-desc">Eliminates traditional PDF notebook revision friction on set. Dedicated production binder featuring non-destructive 3-layer notes, offline peer-to-peer air sync, and darkroom Metal shaders.</p>
+              <ul class="app-features">
+                <li>Non-destructive 3-layer separation: private MyMemoPEN vs synchronized director SharePEN</li>
+                <li>Offline Multipeer Connectivity: instant air sync across 10+ cameras without cloud or internet</li>
+                <li>Zero-loss PDF revision replacement: updates script pages without detaching existing annotations</li>
+                <li>Pre-configured production binders: Script, Storyboard, Call Sheet, Floor Plan, and Blank Notes</li>
+              </ul>
+            </div>
+            <div class="app-card-footer">
+              <div class="pricing-block">
+                <div class="pricing-primary">$19.99 <span class="pricing-tag">In-App Purchase</span></div>
+                <span class="pricing-sub">Free Viewer &amp; Private Memo &bull; Host Pro Unlock</span>
+              </div>
+              <div class="status-action-wrap">
+                <span class="status-badge dev">In Development</span>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 1.5. COMPANION REDIRECT & LANDING VIEW (#companion) -->
+    <section id="view-companion" class="view-section">
+      <div class="card" style="max-width: 680px; margin: 0 auto; text-align: center; padding: 48px 32px;">
+        <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+          <img src="assets/icons/offloader-companion.png" alt="Offloader Companion Icon" style="width: 96px; height: 96px; border-radius: 22px; box-shadow: 0 10px 25px rgba(0,0,0,0.22); border: 1px solid var(--border);">
+        </div>
+        <span class="hero-badge" style="margin-bottom: 12px;">iOS &bull; iPhone &bull; Apple Watch</span>
+        <h2 style="font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px;">Offloader Companion</h2>
+        <p style="font-size: 1.05rem; font-weight: 500; color: var(--accent); margin-bottom: 16px;">
+          Real-Time DIT Telemetry &amp; Push Monitor
+        </p>
+        <p style="color: var(--text-secondary); max-width: 520px; margin: 0 auto 28px; line-height: 1.6;">
+          Companion iPhone app engineered for Offloader Pro on macOS. Step away from your DIT desk with full confidence while real-time card copy speeds, xxHash64 checksum verification, and APNs completion alerts stream directly to your pocket and Apple Watch.
+        </p>
+
+        <!-- Feature Grid Mini -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; text-align: left; margin-bottom: 32px;">
+          <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px;">
+            <div style="font-weight: 600; font-size: 0.92rem; margin-bottom: 4px;">⚡️ 1-Second QR Pairing</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary);">Point your iPhone Camera at Offloader Pro on your Mac to link instantly over local Wi-Fi or secure relay.</div>
+          </div>
+          <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px;">
+            <div style="font-weight: 600; font-size: 0.92rem; margin-bottom: 4px;">📊 Live Copy Telemetry</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary);">Monitor transfer throughput (MB/s), estimated time remaining (ETA), and verified gigabytes in real time.</div>
+          </div>
+          <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px;">
+            <div style="font-weight: 600; font-size: 0.92rem; margin-bottom: 4px;">🔔 Apple Watch &amp; Push</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary);">Get instant APNs alerts when offloading completes or if a drive disconnects, without hovering over your desk.</div>
+          </div>
+          <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px;">
+            <div style="font-weight: 600; font-size: 0.92rem; margin-bottom: 4px;">🔒 Zero-Knowledge Privacy</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary);">No account creation required. Local network peer-to-peer prioritized, telemetry payload encrypted.</div>
+          </div>
+        </div>
+
+        <!-- App Store Download / Redirect Action -->
+        <div style="background: var(--badge-bg); border: 1px solid var(--border); border-radius: 16px; padding: 24px 20px; margin-bottom: 24px;">
+          <div style="display: inline-block; padding: 4px 12px; border-radius: 12px; background: rgba(0, 113, 227, 0.12); color: var(--accent); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;" id="companion-status-badge">
+            App Store Review Pending
+          </div>
+          <div style="margin-bottom: 16px;">
+            <a id="companion-store-btn" href="#" class="contact-btn" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; padding: 12px 28px; font-weight: 600; font-size: 0.95rem;" onclick="handleCompanionStoreClick(event)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 0.92-2.87-.93.04-2.02.63-2.65 1.37-.56.64-1.04 1.71-.91 2.74 1.04.08 2.06-.52 2.64-1.24z"/></svg>
+              <span>Download on the App Store</span>
+            </a>
+          </div>
+          <p id="companion-status-note" style="font-size: 0.82rem; color: var(--text-secondary); margin: 0;">
+            Offloader Companion is currently in the App Store review process. Once approved, this link redirects directly to the App Store.
+          </p>
+        </div>
+
+        <div>
+          <a href="#apps" onclick="switchTab('apps'); return false;" style="color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 500;">
+            &larr; Back to Gemba Lab Production Apps
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. SUPPORT & MANIFESTO VIEW -->
+    <section id="view-support" class="view-section">
+      
+      <!-- Contact Card -->
+      <div class="card contact-card">
+        <h2>Customer Support &amp; Developer Inquiries</h2>
+        <p>Have technical questions, bug reports, or set workflow feature requests? We read every email directly from our production desks in Tokyo.</p>
+        <a href="mailto:gembalab.app@gmail.com?subject=App%20Inquiry%20/%20Support" class="contact-btn">
+          ✉️ Email Support
+        </a>
+        <span class="email-text">gembalab.app@gmail.com</span>
+      </div>
+
+      <!-- The Gemba Lab Manifesto Card -->
+      <div class="card manifesto-card" style="line-height: 1.75; text-align: left;">
+        <span class="hero-badge" style="margin-bottom: 14px;">About Gemba Lab &bull; Tools Born on Set</span>
+        <h2 style="font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px;">
+          I am a filmmaker.
+        </h2>
+        
+        <p style="font-size: 1.05rem; margin-bottom: 16px;">
+          <strong>Gemba Lab</strong> is not a faceless software corporation or an app factory. It is an independent, boots-on-the-ground project born out of the tools, architectures, and workflows that my crew and I have desperately wished existed over years of active production.
+        </p>
+        
+        <p style="margin-bottom: 24px;">
+          <strong>None of these applications have user manuals.</strong><br>
+          Because on set, nobody has time to read a manual. Every single utility is engineered to be truly, intuitively self-explanatory&mdash;battle-tested, patched, and refined directly on live sets under real filming conditions.
+        </p>
+
+        <hr style="border: 0; border-top: 1px solid var(--border); margin: 28px 0;">
+
+        <h3 style="font-size: 1.35rem; font-weight: 700; color: var(--accent); margin-bottom: 14px;">
+          &ldquo;Tight budget, but zero compromise on quality.&rdquo;
+        </h3>
+        <p style="margin-bottom: 16px;">
+          Every filmmaker outside of giant studio budgets confronts this reality daily. To stand alongside and support the creators I deeply respect, Gemba Lab is built on three core pillars:
+        </p>
+        
+        <ul style="margin-left: 20px; margin-bottom: 24px; color: var(--text);">
+          <li style="margin-bottom: 10px;"><strong>1. Production-grade capabilities at fair, transparent prices.</strong></li>
+          <li style="margin-bottom: 10px;"><strong>2. Proud, sustainable engineering&mdash;never racing to the bottom with throwaway software.</strong></li>
+          <li style="margin-bottom: 10px;"><strong>3. Generous, accessible paths for students, assistants, and indie creators who are just starting out.</strong></li>
+        </ul>
+
+        <p style="margin-bottom: 16px;">
+          Every price tag here is what I would gladly pay out of my own pocket as an active creator. For higher-tier equipment tools where jobs are intermittent, we provide <strong>1-Day Rental Passes ($0.99)</strong>. 
+          <strong>This is strictly NOT a subscription.</strong> A 1-Day Pass unlocks 24 hours of unlimited usage. When the 24 hours end, the app gracefully returns to its restricted state&mdash;you will never be billed automatically, and there are zero recurring credit card traps. 
+          Gemba Lab apps are built on perpetual, one-time ownership. We will never compromise on this principle.
+        </p>
+
+        <hr style="border: 0; border-top: 1px solid var(--border); margin: 28px 0;">
+
+        <h3 style="font-size: 1.35rem; font-weight: 700; margin-bottom: 14px;">
+          The Origin of &ldquo;Fast. Lean. Flawless.&rdquo;
+        </h3>
+        <p style="margin-bottom: 16px;">
+          There is a legendary philosophy from classic Japanese food culture that I cherish: <em>&ldquo;Hayai, Umai, Yasui&rdquo;</em> (Fast, Delicious, Affordable).
+        </p>
+        <p style="margin-bottom: 20px;">
+          At Gemba Lab, we translate that mindset directly into the craft of cinema:
+        </p>
+        
+        <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; margin-bottom: 28px;">
+          <p style="margin: 0 0 10px 0;"><strong>Fast</strong> &mdash; Delivering on time, eliminating set bottlenecks, zero latency.</p>
+          <p style="margin: 0 0 10px 0;"><strong>Lean</strong> &mdash; Maximizing budget efficiency without paying for enterprise bloat.</p>
+          <p style="margin: 0;"><strong>Flawless</strong> &mdash; Delivering uncompromised, pristine quality on screen.</p>
+        </div>
+
+        <p style="margin-bottom: 20px;">
+          Every application offers a free tier or trial. Please download them, put them to the test on your own sets, and email us if you think: <em>&ldquo;I need this feature,&rdquo;</em> or <em>&ldquo;This would work faster on set.&rdquo;</em>
+        </p>
+        
+        <p style="font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 28px;">
+          Let&rsquo;s make great films together.
+        </p>
+
+        <div style="border-top: 1px solid var(--border); padding-top: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+          <div>
+            <div style="font-weight: 700; font-size: 1.1rem; color: var(--text);">Gen Kanaiduka</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);">Filmmaker &bull; Founder, Gemba Lab &bull; Tokyo, Japan</div>
+          </div>
+          <a href="mailto:gembalab.app@gmail.com?subject=Filmmaker%20Feedback%20/%20Inquiry" class="contact-btn" style="padding: 10px 22px; font-size: 0.9rem;">
+            ✉️ Email Gen Directly
+          </a>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 3. PRIVACY POLICY VIEW -->
+    <section id="view-privacy" class="view-section">
+
+      <div class="card">
+        <h2>Privacy Policy</h2>
+        <p><strong>Last Updated: November 2026</strong></p>
+        <p style="margin-top: 10px;">
+          Gemba Lab (&ldquo;we&rdquo;, &ldquo;our&rdquo;, or &ldquo;us&rdquo;) designs professional production software for macOS and iOS. We believe your creative data, footage, and project assets are strictly your own property. Our applications are engineered with a zero-knowledge, privacy-by-design philosophy.
+        </p>
+
+        <h3>1. Zero Data Collection on Footage &amp; Media</h3>
+        <p>
+          None of our applications (including Offloader Pro, MediaCheck, HyperCatalog, LumaScope Pro, LumaLUT, LumaMatch, CueFlow Studio, SlateFlow, ScriptFlow, or CartPad) upload, transmit, or inspect the contents of your video clips, audio tracks, camera cards, or look-up tables. All file operations, checksum hashing, and color rendering take place entirely locally on your hardware.
+        </p>
+
+        <h3>2. Local Network Communication</h3>
+        <p>
+          Telemetry connections between macOS parent apps and iOS companion apps (such as Offloader Companion or CueFlow Stage) operate primarily over peer-to-peer local network protocols. Only essential status telemetry (e.g. transfer percentages, ETA, timecode indicators) is transmitted across the local link. No media files or raw footage are ever routed through external cloud servers.
+        </p>
+
+        <h3>3. Analytics &amp; Crash Reporting</h3>
+        <p>
+          We do not use third-party user-tracking trackers or ad SDKs. Anonymous crash logs and diagnostic telemetry may be processed solely through Apple&rsquo;s native App Store crash reporting services if you have opted in via your Apple Account settings.
+        </p>
+
+        <h3>4. In-App Purchases</h3>
+        <p>
+          All financial transactions and subscriptions are handled securely through Apple&rsquo;s StoreKit. Gemba Lab never sees or stores your payment details or credit card information.
+        </p>
+
+        <h3>5. Contact Us</h3>
+        <p>
+          If you have questions about our privacy practices, please contact our support team at:
+          <br>
+          <a href="mailto:gembalab.app@gmail.com" style="color: var(--accent);">gembalab.app@gmail.com</a>
+        </p>
+
+        <p style="margin-top: 24px; font-size: 0.8rem; color: var(--text-secondary); border-top: 1px solid var(--border); padding-top: 16px;">
+          Gemba Lab is an independent software studio operated by Gen Kanaiduka. &copy; 2026 Gemba Lab. All rights reserved.
+        </p>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 Gemba Lab. All rights reserved. &bull; <em>Fast. Lean. Flawless.</em></p>
+    <p style="margin-top: 8px; font-size: 0.84rem;">
+      <a href="#apps" onclick="switchTab('apps'); return false;">Apps &amp; Suites</a> &bull; 
+      <a href="#support" onclick="switchTab('support'); return false;">Support</a> &bull; 
+      <a href="#privacy" onclick="switchTab('privacy'); return false;">Privacy Policy</a>
+    </p>
+  </footer>
+
+  <!-- Script for Single-Page Tab Switching & Hash Navigation -->
+  <script>
+    // App Store URL once approved
+    const COMPANION_APP_STORE_URL = "";
+
+    function handleCompanionStoreClick(e) {
+      if (!COMPANION_APP_STORE_URL) {
+        e.preventDefault();
+        alert("Offloader Companion for iOS is currently undergoing Apple App Store review and will be available shortly! Thank you for your patience.");
+      } else {
+        window.location.href = COMPANION_APP_STORE_URL;
+      }
+    }
+
+    function switchTab(tab, targetAppId) {
+      const isApps = tab === 'apps';
+      const isPrivacy = tab === 'privacy';
+      const isSupport = tab === 'support';
+      const isCompanion = tab === 'companion';
+
+      // Update Tab Buttons
+      document.getElementById('tab-apps').classList.toggle('active', isApps);
+      document.getElementById('tab-support').classList.toggle('active', isSupport);
+      document.getElementById('tab-privacy').classList.toggle('active', isPrivacy);
+
+      // Update Views
+      document.getElementById('view-apps').classList.toggle('active', isApps);
+      document.getElementById('view-support').classList.toggle('active', isSupport);
+      document.getElementById('view-privacy').classList.toggle('active', isPrivacy);
+      document.getElementById('view-companion').classList.toggle('active', isCompanion);
+
+      // Update Hero Content
+      const badge = document.getElementById('hero-badge');
+      const title = document.getElementById('hero-title');
+      const desc = document.getElementById('hero-desc');
+
+      if (isApps) {
+        badge.innerText = "Gemba Lab \u2022 Fast. Lean. Flawless.";
+        title.innerText = "Tools Born on Set";
+        desc.innerText = "Professional cinema, broadcast, and live operations utilities engineered for rock-solid stability, zero latency, and uncompromising workflows across macOS, iPadOS & iOS.";
+      } else if (isSupport) {
+        badge.innerText = "Support & Philosophy";
+        title.innerText = "Support & Manifesto";
+        desc.innerText = "Direct creator support, real-world set feedback, and the founding story behind Gemba Lab.";
+      } else if (isPrivacy) {
+        badge.innerText = "Transparency & Trust";
+        title.innerText = "Privacy Policy";
+        desc.innerText = "Clear, transparent, and privacy-first standards for all our applications.";
+      } else if (isCompanion) {
+        badge.innerText = "iOS Companion \u2022 iPhone & Apple Watch";
+        title.innerText = "Offloader Companion";
+        desc.innerText = "Real-time DIT telemetry, live verification monitoring, and completion push alerts for Offloader Pro.";
+      }
+
+      // Update URL Hash without full reload
+      const newHash = targetAppId ? '#' + targetAppId : '#' + tab;
+      history.replaceState(null, null, newHash);
+
+      // Auto-redirect to App Store if URL configured
+      if (isCompanion && COMPANION_APP_STORE_URL) {
+        setTimeout(() => {
+          window.location.href = COMPANION_APP_STORE_URL;
+        }, 800);
+      }
+
+      // If scrolling to a specific app card or suite
+      if (targetAppId) {
+        setTimeout(() => {
+          const el = document.getElementById(targetAppId.startsWith('suite-') ? targetAppId : 'app-' + targetAppId);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (!targetAppId.startsWith('suite-')) {
+              el.style.outline = '2px solid var(--accent)';
+              setTimeout(() => { el.style.outline = 'none'; }, 1500);
+            }
+          }
+        }, 80);
+      }
+    }
+
+    function showApp(appId) {
+      switchTab('apps', appId);
+    }
+
+    function handleRoute() {
+      const hash = window.location.hash.toLowerCase().replace('#', '');
+      const validApps = [
+        'offloader', 'offloader-companion', 'mediacheck', 'hypercatalog',
+        'lumalive', 'lumascope', 'lumalut', 'lumalive-surface', 'lumamatch', 'lumacal',
+        'cueflow', 'cartpad', 'cueflow-stage', 'cueflow-remote',
+        'slateflow', 'scriptflow'
+      ];
+      const validSuites = ['suite-dit', 'suite-color', 'suite-live', 'suite-set'];
+
+      if (hash === 'privacy') {
+        switchTab('privacy');
+      } else if (hash === 'support') {
+        switchTab('support');
+      } else if (hash === 'companion' || hash === 'offloader-companion-page') {
+        switchTab('companion');
+      } else if (validSuites.includes(hash)) {
+        showApp(hash);
+      } else if (validApps.includes(hash)) {
+        showApp(hash);
+      } else {
+        switchTab('apps');
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', handleRoute);
+    window.addEventListener('hashchange', handleRoute);
+  </script>
+
+</body>
+</html>
